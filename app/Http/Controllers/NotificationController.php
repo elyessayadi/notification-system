@@ -3,24 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\NotificationType;
+use App\Models\Notification;
+use App\Jobs\SendNotificationJob;
 
 class NotificationController extends Controller
 {
-    public function sendNotification(Request $request)
+    public function sendNotifications()
     {
-        $users = User::whereHas('notificationTypes', function($query) use ($request) {
-            $query->where('type', $request->type);
-        })->get();
+        $users = User::with('notificationTypes')->get();
 
+        $notifications = Notification::where('status', 'pending')->get();
         foreach ($users as $user) {
-            $notification = new Notification([
-                'type' => $request->type,
-                'message' => $request->message,
-                'status' => 'pending',
-            ]);
+            // Get the notification types the user is subscribed to
+            $subscribedTypes = $user->notificationTypes->pluck('type')->toArray();
 
-            $user->notifications()->save($notification);
-            dispatch(new SendNotificationJob($notification));
+            // Filter notifications where the type is in the user's subscribed types
+            $userNotifications = $notifications->whereIn('type', $subscribedTypes);
+
+            foreach ($userNotifications as $notification) {
+                // Dispatch the job for each notification
+                dispatch(new SendNotificationJob($notification,$user));
+            }
         }
 
         return response()->json(['status' => 'Notifications sent to queue']);

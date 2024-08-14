@@ -1,0 +1,33 @@
+# Use an official PHP runtime as a parent image
+FROM php:8.1-fpm
+
+# Set the working directory inside the container
+WORKDIR /var/www
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    curl
+
+# Install PHP extensions required for Laravel
+RUN docker-php-ext-install pdo pdo_mysql gd
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy the existing application code to the container
+COPY . .
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Set file permissions
+RUN chown -R www-data:www-data /var/www
+
+# Set the entrypoint for the container
+CMD ["php-fpm"]

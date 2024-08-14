@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:80"
+    networks:
+      - laravel
+    command: sh -c "php artisan migrate:fresh --seed && php-fpm"
+
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: notifications_system
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_queue
+    working_dir: /var/www
+    command: php artisan queue:work
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel
+
+networks:
+  laravel:
+
+volumes:
+  db_data:

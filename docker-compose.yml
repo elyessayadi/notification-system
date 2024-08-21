@@ -1,49 +1,75 @@
+version: "3.8"
+
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_app
-    restart: unless-stopped
-    working_dir: /var/www
-    volumes:
-      - .:/var/www
-    ports:
-      - "8000:80"
-    networks:
-      - laravel
-    command: sh -c "php artisan migrate:fresh --seed && php-fpm"
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+        ports:
+            - "8000:80"
+            - "5173:5173"  # Expose Vite port
+        networks:
+            - laravel
+        command: sh -c "rm -f /var/www/html/migrations_done && /usr/local/bin/wait-for-it db:3306 -- composer install && php artisan migrate:fresh --seed && touch /var/www/html/migrations_done && supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+        depends_on:
+            - db
 
-  db:
-    image: mysql:8.0
-    container_name: laravel_db
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: notifications_system
-      MYSQL_USER: root
-      MYSQL_PASSWORD:
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    networks:
-      - laravel
+    nginx:
+        image: nginx:latest
+        container_name: nginx_server
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/var/www/html
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        networks:
+            - laravel
+        depends_on:
+            - app
 
-  queue:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: laravel_queue
-    working_dir: /var/www
-    command: php artisan queue:work
-    volumes:
-      - .:/var/www
-    networks:
-      - laravel
+    db:
+        image: mysql:8.0
+        container_name: laravel_db
+        restart: unless-stopped
+        environment:
+            MYSQL_ROOT_PASSWORD: Str0ngDBP@ssw0rd
+            MYSQL_DATABASE: notification_system
+            MYSQL_USER: "test"
+            MYSQL_PASSWORD: "test"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        volumes:
+            - db_data:/var/lib/mysql
+        ports:
+            - "3366:3306"
+        networks:
+            - laravel
+
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_queue
+        restart: unless-stopped
+        environment:
+            QUEUE_CONNECTION: database
+        working_dir: /var/www/html
+        command: sh -c "while [ ! -f /var/www/html/migrations_done ]; do echo 'Waiting for migrations to complete...'; sleep 5; done && php artisan queue:work"
+        volumes:
+            - .:/var/www/html
+        networks:
+            - laravel
+        depends_on:
+            - db
+            - app
 
 networks:
-  laravel:
+    laravel:
 
 volumes:
-  db_data:
+    db_data:

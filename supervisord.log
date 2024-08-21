@@ -1,0 +1,50 @@
+2024-08-15 01:11:09,517 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-08-15 01:11:09,529 INFO supervisord started with pid 64
+2024-08-15 01:11:10,534 INFO spawned: 'php-fpm' with pid 65
+2024-08-15 01:11:10,537 INFO spawned: 'vite' with pid 66
+2024-08-15 01:11:11,663 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:11:11,665 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:11:12,182 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:13,189 INFO spawned: 'vite' with pid 79
+2024-08-15 01:11:14,194 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:11:14,724 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:15,733 INFO spawned: 'vite' with pid 90
+2024-08-15 01:11:16,345 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:17,353 INFO spawned: 'vite' with pid 101
+2024-08-15 01:11:17,933 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:19,945 INFO spawned: 'vite' with pid 112
+2024-08-15 01:11:20,531 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:23,539 INFO spawned: 'vite' with pid 123
+2024-08-15 01:11:24,079 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:11:25,082 INFO gave up: vite entered FATAL state, too many start retries too quickly
+2024-08-15 01:16:27,203 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-08-15 01:16:27,212 INFO supervisord started with pid 38
+2024-08-15 01:16:28,216 INFO spawned: 'php-fpm' with pid 39
+2024-08-15 01:16:28,219 INFO spawned: 'vite' with pid 40
+2024-08-15 01:16:29,105 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:16:30,109 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:16:30,123 INFO spawned: 'vite' with pid 53
+2024-08-15 01:16:30,856 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:16:32,862 INFO spawned: 'vite' with pid 64
+2024-08-15 01:16:33,483 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:16:36,495 INFO spawned: 'vite' with pid 75
+2024-08-15 01:16:37,298 WARN exited: vite (exit status 1; not expected)
+2024-08-15 01:16:38,302 INFO gave up: vite entered FATAL state, too many start retries too quickly
+2024-08-15 01:18:20,530 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-08-15 01:18:20,549 INFO supervisord started with pid 38
+2024-08-15 01:18:21,574 INFO spawned: 'php-fpm' with pid 39
+2024-08-15 01:18:21,582 INFO spawned: 'vite' with pid 40
+2024-08-15 01:18:23,211 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:18:23,214 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:23:38,603 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-08-15 01:23:38,626 INFO supervisord started with pid 38
+2024-08-15 01:23:39,634 INFO spawned: 'php-fpm' with pid 39
+2024-08-15 01:23:39,649 INFO spawned: 'vite' with pid 40
+2024-08-15 01:23:40,762 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:23:40,762 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:29:56,385 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2024-08-15 01:29:56,403 INFO supervisord started with pid 38
+2024-08-15 01:29:57,412 INFO spawned: 'php-fpm' with pid 39
+2024-08-15 01:29:57,427 INFO spawned: 'vite' with pid 40
+2024-08-15 01:29:59,186 INFO success: php-fpm entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2024-08-15 01:29:59,188 INFO success: vite entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

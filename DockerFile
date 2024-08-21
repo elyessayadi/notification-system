@@ -1,33 +1,56 @@
-# Use an official PHP runtime as a parent image
-FROM php:8.1-fpm
+# Use an official PHP-FPM image
+FROM php:8.2-fpm
 
-# Set the working directory inside the container
-WORKDIR /var/www
+# Set working directory
+WORKDIR /var/www/html
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    git \
+    curl \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libzip-dev \
     zip \
     unzip \
-    git \
-    curl
-
-# Install PHP extensions required for Laravel
-RUN docker-php-ext-install pdo pdo_mysql gd
+    nginx \
+    nodejs \
+    npm \
+    supervisor \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install pdo_mysql zip exif pcntl \
+    && docker-php-ext-enable pdo_mysql
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy the existing application code to the container
+# Copy composer files and install dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-scripts --no-progress --no-interaction
+
+# Copy existing application directory contents
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install Node.js dependencies
+RUN npm install
 
-# Set file permissions
-RUN chown -R www-data:www-data /var/www
+# Copy wait-for-it script
+COPY wait-for-it.sh /usr/local/bin/wait-for-it
+RUN chmod +x /usr/local/bin/wait-for-it
 
-# Set the entrypoint for the container
-CMD ["php-fpm"]
+# Copy supervisord configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Nginx configuration
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80 and Vite port
+EXPOSE 80 5173
+
+# Start Supervisor
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
